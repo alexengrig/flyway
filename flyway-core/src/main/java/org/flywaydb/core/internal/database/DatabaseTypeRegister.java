@@ -48,6 +48,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,10 +105,9 @@ public class DatabaseTypeRegister {
 
         if (typesAcceptingUrl.size() > 0) {
             if (typesAcceptingUrl.size() > 1) {
-                StringBuilder builder = new StringBuilder();
+                StringJoiner builder = new StringJoiner(", ");
                 for (DatabaseType type : typesAcceptingUrl) {
-                    if (builder.length() > 0) builder.append(", ");
-                    builder.append(type.getName());
+                    builder.add(type.getName());
                 }
 
                 LOG.debug("Multiple databases found that handle url '" + redactJdbcUrl(url) + "'. " + builder);
