@@ -426,7 +426,7 @@ public class ConfigUtils {
     public static Map<String, String> loadConfigurationFromString(String configuration) throws IOException {
         String[] lines = configuration.split("\n");
 
-        StringBuilder confBuilder = new StringBuilder();
+        StringJoiner confJoiner = new StringJoiner("\n");
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
             String replacedLine = line.trim().replace("\\", "\\\\");
@@ -456,9 +456,9 @@ public class ConfigUtils {
                 }
             }
 
-            confBuilder.append(replacedLine).append("\n");
+            confJoiner.add(replacedLine);
         }
-        String contents = confBuilder.toString();
+        String contents = confJoiner.toString();
 
         Properties properties = new Properties();
         contents = expandEnvironmentVariables(contents, System.getenv());
