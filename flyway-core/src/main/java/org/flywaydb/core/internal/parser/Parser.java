@@ -411,12 +411,9 @@ public abstract class Parser {
             }
         }
 
-        StringBuilder builder = new StringBuilder();
+        StringJoiner builder = new StringJoiner(" ");
         for (int i = tokenStrings.size()-1; i >= 0; i--) {
-            builder.append(tokenStrings.get(i));
-            if (i != 0) {
-                builder.append(" ");
-            }
+            builder.add(tokenStrings.get(i));
         }
 
         return regex.matcher(builder.toString()).matches();
