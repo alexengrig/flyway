@@ -36,6 +36,7 @@ import org.flywaydb.core.internal.util.AbbreviationUtils;
 import java.io.Closeable;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.StringJoiner;
 
 /**
  * Abstraction for database-specific functionality.
@@ -280,15 +281,10 @@ public abstract class Database<C extends Connection> implements Closeable {
      * @return The fully qualified quoted identifiers.
      */
     public final String quote(String... identifiers) {
-        StringBuilder result = new StringBuilder();
+        StringJoiner result = new StringJoiner(".");
 
-        boolean first = true;
         for (String identifier : identifiers) {
-            if (!first) {
-                result.append(".");
-            }
-            first = false;
-            result.append(doQuote(identifier));
+            result.add(doQuote(identifier));
         }
 
         return result.toString();
