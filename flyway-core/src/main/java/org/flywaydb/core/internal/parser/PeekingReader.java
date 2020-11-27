@@ -204,6 +204,39 @@ public class PeekingReader extends FilterReader {
         return result.toString();
     }
 
+    public String peekWithChars(int numChars, boolean peekMultipleLines) throws IOException {
+        // If we need to peek beyond the physical size of the peek buffer - eg. we have encountered a very
+        // long string literal - then expand the buffer to be big enough to contain it.
+        if (numChars >= peekBuffer.length) {
+            resizePeekBuffer(numChars);
+        }
+
+        if (peekBufferOffset + numChars >= peekMax) {
+            refillPeekBuffer();
+        }
+
+        char[] result = new char[numChars];
+        int i = 0, prevR = -1;
+        while (i < numChars) {
+            int r = peekBuffer[peekBufferOffset + i];
+            if (r == -1) {
+                break;
+            } else if (peekBufferOffset + i > peekMax) {
+                break;
+            } else if (!peekMultipleLines && prevR == '\n') {
+                break;
+            }
+            result[i] = (char) r;
+
+            i++;
+            prevR = r;
+        }
+        if (i == 0) {
+            return null;
+        }
+        return new String(result, 0, i);
+    }
+
     /**
      * Return the next non-whitespace character
      * @return The character
