@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * SQLServer implementation of Schema.
@@ -339,15 +340,11 @@ public class SQLServerSchema extends Schema<SQLServerDatabase, SQLServerTable> {
         );
 
         // Build the types IN clause.
-        boolean first = true;
+        StringJoiner joiner = new StringJoiner(", ");
         for (ObjectType type : types) {
-            if (!first) {
-                query.append(", ");
-            }
-            query.append("'").append(type.code).append("'");
-            first = false;
+            joiner.add("'" + type.code + "'");
         }
-        query.append(")");
+        query.append(joiner).append(")");
 
         if (parent != null) {
             // Apply the parent selection if one was given.
