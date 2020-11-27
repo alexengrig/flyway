@@ -25,6 +25,7 @@ import org.flywaydb.core.internal.util.StringUtils;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -112,6 +113,19 @@ public class MySQLConnection extends Connection<MySQLDatabase> {
                         setStatement.append(",");
                     }
                     setStatement.append("@").append(userVariable).append("=NULL");
+                }
+                jdbcTemplate.executeStatement(setStatement.toString());
+            }
+        }
+    }
+
+    private void resetUserVariablesNew() throws SQLException {
+        if (canResetUserVariables) {
+            List<String> userVariables = jdbcTemplate.queryForStringList(userVariablesQuery);
+            if (!userVariables.isEmpty()) {
+                StringJoiner setStatement = new StringJoiner(",", "SET ", "");
+                for (String userVariable : userVariables) {
+                    setStatement.add("@" + userVariable + "=NULL");
                 }
                 jdbcTemplate.executeStatement(setStatement.toString());
             }
